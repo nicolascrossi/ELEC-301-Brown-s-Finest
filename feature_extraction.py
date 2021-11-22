@@ -16,3 +16,10 @@ print(mfccs.shape)#Displaying  the MFCCs:
 #fig = plt.figure()
 librosa.display.specshow(mfccs, sr=sr, x_axis='time')
 plt.show()
+
+"""
+Known methods:
+- K-nearest - Chris
+- means clustering - Christian
+- logistic - Nico
+"""
