@@ -11,7 +11,7 @@ x = list(reader)
 
 # Remove header
 x = x[1 :]
-
+ 
 # Remove song name and convert genre to a number
 genre_to_int = {}
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
