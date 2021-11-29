@@ -7,7 +7,7 @@ from sklearn.neural_network import MLPClassifier
 import gen_mfcc_csv
 
 #gen_mfcc_csv.create_librosa_mfccs()
-reader = csv.reader(open("test_data.csv", "r"), delimiter=",")
+reader = csv.reader(open("data.csv", "r"), delimiter=",")
 x = list(reader)
 
 # Remove header
