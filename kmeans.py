@@ -61,3 +61,41 @@ print("Testing Accuracy: ", test_acc)
 #plt.show()
 #plt.xlabel("genre by number")
 #plt.ylabel("number of songs assigned to that genre")
+
+reader = csv.reader(open("test_data.csv", "r"), delimiter=",")
+test_data = list(reader)
+
+# Remove header
+test_data = test_data[1 :]
+
+x = []
+# Remove filename
+for row in test_data:
+    x.append(row[1:])
+
+data = np.array(x).astype("float")
+
+print("shape ", data.shape)
+
+labels = k_mean.predict(data)
+
+print(labels.shape)
+
+labels = [int_to_genre[i] for i in labels]
+
+print(labels[0:10])
+
+
+header = 'filename label'
+header = header.split()
+
+file = open('submission.csv', 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
+for filename, label in zip(test_data, labels):
+    file = open('submission.csv', 'a', newline='')
+    with file:
+        writer = csv.writer(file)
+        writer.writerow((filename[0], label))
