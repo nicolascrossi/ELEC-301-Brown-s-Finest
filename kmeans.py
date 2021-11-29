@@ -24,10 +24,12 @@ X = X[1 :]
 
 # Remove song name, convert genre to a number
 genre_to_int = {}
+int_to_genre = {}
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 val = 0
 for g in genres:
     genre_to_int[g] = val
+    int_to_genre[val] = g
     val += 1
 for row in X:
     row.pop(0)
