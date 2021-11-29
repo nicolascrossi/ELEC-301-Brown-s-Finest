@@ -2,6 +2,7 @@ import csv
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.neural_network import MLPClassifier
 
 import gen_mfcc_csv
 
@@ -62,5 +63,5 @@ print("training accuracies: ", train_acc)
 #basic KNN
 
 clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                    hidden_layer_sizes=(15,), random_state=1)
+                    hidden_layer_sizes=(15,), random_state=1, max_iter=1000000)
 clf.fit(X_train, y_train)
