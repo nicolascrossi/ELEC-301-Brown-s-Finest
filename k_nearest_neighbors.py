@@ -7,7 +7,7 @@ from sklearn.neural_network import MLPClassifier
 import gen_mfcc_csv
 
 #gen_mfcc_csv.create_librosa_mfccs()
-reader = csv.reader(open("data.csv", "r"), delimiter=",")
+reader = csv.reader(open("test_data.csv", "r"), delimiter=",")
 x = list(reader)
 
 # Remove header
@@ -50,20 +50,6 @@ neigh.fit(X_train, y_train)
 labels = neigh.predict(data)
 labels = [int_to_genre[i] for i in labels]
 
-for i in range(5, 15, 2):
-    
-    
-    dist, indices = neigh.kneighbors(X_test, return_distance=True)
-    print("Mean distance: ", dist[0])
-
-    #neigh.kneighbors(X, return_distance=False)
-
-    
-    train_acc.append(neigh.score(X_train, y_train))
-
-    print(f"For {i} neighbors", "accuracy was:", neigh.score(X_train, y_train))
-    print(f"For {i} neighbors", "test acc was:", neigh.score(X_test, y_test))
-
 print("training accuracies: ", train_acc)
 
 header = 'filename label'
@@ -82,5 +68,5 @@ for filename, label in zip(test_data, labels):
 #basic KNN
 
 #clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
-                    hidden_layer_sizes=(15,), random_state=1, max_iter=1000000)
+        #hidden_layer_sizes=(15,), random_state=1, max_iter=1000000)
 #clf.fit(X_train, y_train)
