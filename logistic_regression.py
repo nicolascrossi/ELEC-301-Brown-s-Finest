@@ -9,12 +9,16 @@ x = list(reader)
 # Remove header
 x = x[1 :]
 
+#FITTING
+
 # Remove song name and convert genre to a number
 genre_to_int = {}
+int_to_genre = {}
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 val = 0
 for g in genres:
     genre_to_int[g] = val
+    int_to_genre[val] = g
     val += 1
 for row in x:
     row.pop(0)
@@ -43,3 +47,46 @@ log_reg = LogisticRegression(max_iter=1000000)
 log_reg.fit(X_train, y_train)
 print(f'Train accuracy: {log_reg.score(X_train, y_train)}')
 print(f'Test accuracy: {log_reg.score(X_test, y_test)}')
+
+
+
+#TESTING
+
+
+reader = csv.reader(open("test_data.csv", "r"), delimiter=",")
+test_data = list(reader)
+
+# Remove header
+test_data = test_data[1 :]
+
+x = []
+# Remove filename
+for row in test_data:
+    x.append(row[1:])
+
+data = np.array(x).astype("float")
+
+print(data.shape)
+
+labels = log_reg.predict(data)
+
+print(labels.shape)
+
+labels = [int_to_genre[i] for i in labels]
+
+print(labels[0:10])
+
+
+header = 'filename label'
+header = header.split()
+
+file = open('submission.csv', 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
+for filename, label in zip(test_data, labels):
+    file = open('submission.csv', 'a', newline='')
+    with file:
+        writer = csv.writer(file)
+        writer.writerow((filename[0], label))
