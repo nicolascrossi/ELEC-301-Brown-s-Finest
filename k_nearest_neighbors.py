@@ -15,10 +15,12 @@ x = x[1 :]
  
 # Remove song name and convert genre to a number
 genre_to_int = {}
+int_to_genre = {}
 genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
 val = 0
 for g in genres:
     genre_to_int[g] = val
+    int_to_genre[val] = g
     val += 1
 for row in x:
     row.pop(0)
@@ -42,10 +44,15 @@ print(y_test.shape)
 
 # print(x_train_vals.shape)
 # print(x_train_class.shape)
-train_acc = []
+# FOR NICO: comment out rest.
+neigh = KNeighborsClassifier(n_neighbors=3)
+neigh.fit(X_train, y_train)
+labels = neigh.predict(data)
+labels = [int_to_genre[i] for i in labels]
+
 for i in range(5, 15, 2):
-    neigh = KNeighborsClassifier(n_neighbors=i)
-    neigh.fit(X_train, y_train)
+    
+    
     dist, indices = neigh.kneighbors(X_test, return_distance=True)
     print("Mean distance: ", dist[0])
 
@@ -59,9 +66,21 @@ for i in range(5, 15, 2):
 
 print("training accuracies: ", train_acc)
 
+header = 'filename label'
+header = header.split()
 
+file = open('submission.csv', 'w', newline='')
+with file:
+    writer = csv.writer(file)
+    writer.writerow(header)
+
+for filename, label in zip(test_data, labels):
+    file = open('submission.csv', 'a', newline='')
+    with file:
+        writer = csv.writer(file)
+        writer.writerow((filename[0], label))
 #basic KNN
 
-clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
+#clf = MLPClassifier(solver='lbfgs', alpha=1e-5,
                     hidden_layer_sizes=(15,), random_state=1, max_iter=1000000)
-clf.fit(X_train, y_train)
+#clf.fit(X_train, y_train)
