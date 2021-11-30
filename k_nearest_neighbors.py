@@ -47,10 +47,33 @@ print(y_test.shape)
 # FOR NICO: comment out rest.
 neigh = KNeighborsClassifier(n_neighbors=3)
 neigh.fit(X_train, y_train)
+
+#TESTING
+
+
+reader = csv.reader(open("test_data.csv", "r"), delimiter=",")
+test_data = list(reader)
+
+# Remove header
+test_data = test_data[1 :]
+
+x = []
+# Remove filename
+for row in test_data:
+    x.append(row[1:])
+
+data = np.array(x).astype("float")
+
+print(data.shape)
+
 labels = neigh.predict(data)
+
+print(labels.shape)
+
 labels = [int_to_genre[i] for i in labels]
 
-print("training accuracies: ", train_acc)
+print(labels[0:10])
+
 
 header = 'filename label'
 header = header.split()
