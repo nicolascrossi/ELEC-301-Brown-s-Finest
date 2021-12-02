@@ -4,7 +4,7 @@ import csv
 import librosa
 import numpy as np
 
-def gen(data_dir: str, output_filename: str, include_genre: bool):
+def gen(data_dir: str, output_filename: str, include_genre: bool, samples_per_file: int, verbose: bool):
     header = "filename ZeroCrossingRate SpectralCentroid SpectralRolloff"
     
     for i in range(1, 21):
@@ -36,46 +36,50 @@ def gen(data_dir: str, output_filename: str, include_genre: bool):
         # Load the song and get sampling rate
         song, sr = librosa.load(f'{data_dir}{filename}', sr = None)
 
-        # Zero crossing rates
-        zrc = librosa.feature.zero_crossing_rate(song)[0]
+        chunks = np.array_split(song, samples_per_file)
 
-        # Spectral centroid
-        spc = librosa.feature.spectral_centroid(song, sr=sr)[0]
+        for idx, chunk in enumerate(chunks):
+            # Zero crossing rates
+            zrc = librosa.feature.zero_crossing_rate(chunk)[0]
 
-        # Spectral roll off
-        spr = librosa.feature.spectral_rolloff(song, sr=sr)[0]
+            # Spectral centroid
+            spc = librosa.feature.spectral_centroid(chunk, sr=sr)[0]
 
-        # Calculate MFCCs
-        mfcc = librosa.feature.mfcc(y=song, sr=sr)
-        
-        # Chroma frequencies
-        chf = librosa.feature.chroma_stft(y=song, sr = sr)
+            # Spectral roll off
+            spr = librosa.feature.spectral_rolloff(chunk, sr=sr)[0]
 
-        # print(f"{zrc[0].shape=}")
-        # print(f"{spc.shape=}")
-        # print(f"{spr.shape=}")
-        # print(f"{mfcc.shape=}")
-        # print(f"{chf.shape=}")
+            # Calculate MFCCs
+            mfcc = librosa.feature.mfcc(y=chunk, sr=sr)
+            
+            # Chroma frequencies
+            chf = librosa.feature.chroma_stft(y=chunk, sr = sr)
+
+            # print(f"{zrc[0].shape=}")
+            # print(f"{spc.shape=}")
+            # print(f"{spr.shape=}")
+            # print(f"{mfcc.shape=}")
+            # print(f"{chf.shape=}")
+            
+            to_append = f'{filename}{idx} {np.mean(zrc)} {np.mean(spc)} {np.mean(spr)}'
+            for e in mfcc:
+                to_append += f' {np.mean(e)}'
+            for e in chf:
+                to_append += f' {np.mean(e)}'
+            
+            if include_genre:
+                to_append += f' {genre}'
+            
+            writer.writerow(to_append.split())
         
-        to_append = f'{filename} {np.mean(zrc)} {np.mean(spc)} {np.mean(spr)}'
-        for e in mfcc:
-            to_append += f' {np.mean(e)}'
-        for e in chf:
-            to_append += f' {np.mean(e)}'
-        
-        if include_genre:
-            to_append += f' {genre}'
-        
-        writer.writerow(to_append.split())
-        
-        print(f"File complete {filename}")
+        if verbose:
+            print(f"File complete {filename}")
 
 train_dir = "./elec301-2021-music-genres/data/data/"
 train_output_filename = 'train_data.csv'
 
-gen(train_dir, train_output_filename, True)
+gen(train_dir, train_output_filename, True, 15, True)
 
 test_dir = "./elec301-2021-music-genres/test_new/test_new/"
 test_output_filename = 'test_data.csv'
 
-gen(test_dir, test_output_filename, False)
+gen(test_dir, test_output_filename, False, 15, True)

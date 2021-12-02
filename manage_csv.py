@@ -2,18 +2,18 @@ import csv
 from typing import Tuple
 import numpy as np
 
-def load_csv(filename: str, contains_labels: bool) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def load_csv(filename: str, contains_labels: bool) -> Tuple[np.ndarray, np.ndarray, list]:
     '''
     Loads the given csv. If it contains data in the last column, pass True for contains_labels.
 
-    Returns the feature data matrix, the labels, and the original python array without the header in that order.
+    Returns the feature data matrix, the labels, and the filenames.
     '''
     reader = csv.reader(open(filename, "r"), delimiter=",")
-    x = list(reader)
+    orig = list(reader)
 
     # Remove header
-    x = x[1 :]
-
+    x = orig[1 :]
+    filenames = []
     # Remove song name and convert genre to a number
     genre_to_int = {}
     genres = 'blues classical country disco hiphop jazz metal pop reggae rock'.split()
@@ -22,7 +22,7 @@ def load_csv(filename: str, contains_labels: bool) -> Tuple[np.ndarray, np.ndarr
         genre_to_int[g] = val
         val += 1
     for row in x:
-        row.pop(0)
+        filenames.append(row.pop(0))
         if contains_labels:
             row[-1] = genre_to_int[row[-1]]
 
@@ -35,7 +35,7 @@ def load_csv(filename: str, contains_labels: bool) -> Tuple[np.ndarray, np.ndarr
         X = data[:, 1 :]
         y = None
     
-    return X, y, x
+    return X, y, filenames
 
 def get_int_to_genre() -> dict[int, str]:
     int_to_genre = {}
@@ -47,7 +47,7 @@ def get_int_to_genre() -> dict[int, str]:
 
     return int_to_genre
 
-def write_submission(filename: str, labels: np.ndarray, original: list):
+def write_submission(filename: str, labels: np.ndarray, filenames: list):
     '''
     Using the given arguments creates a submission file.
     '''
@@ -63,8 +63,8 @@ def write_submission(filename: str, labels: np.ndarray, original: list):
         writer = csv.writer(file)
         writer.writerow(header)
 
-    for row, label in zip(original, labels):
+    for name, label in zip(filenames, labels):
         file = open(filename, 'a', newline='')
         with file:
             writer = csv.writer(file)
-            writer.writerow((row[0], label))
+            writer.writerow((name, label))
