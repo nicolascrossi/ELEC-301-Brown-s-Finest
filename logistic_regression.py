@@ -1,10 +1,9 @@
-import csv
-import numpy as np
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 from manage_csv import load_csv, write_submission
 
+# Load the CSV. The third return value is the original python list, but we don't care about it here
 X, y, _ = load_csv("train_data.csv", True)
 
 # Random state 0 = 57%
@@ -18,6 +17,7 @@ print(f'Test accuracy: {log_reg.score(X_test, y_test)}')
 
 #TESTING
 
+# Load the CSV. The second return value is the labels, but it's none since our second argument is false
 X_test, _, original = load_csv("test_data.csv", False)
 
 labels = log_reg.predict(X_test)
