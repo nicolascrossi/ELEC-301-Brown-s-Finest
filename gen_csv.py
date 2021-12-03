@@ -75,11 +75,11 @@ def gen(data_dir: str, output_filename: str, include_genre: bool, samples_per_fi
             print(f"File complete {filename}")
 
 train_dir = "./elec301-2021-music-genres/data/data/"
-train_output_filename = 'train_data.csv'
+train_output_filename = 'train_data1.csv'
 
-gen(train_dir, train_output_filename, True, 15, True)
+gen(train_dir, train_output_filename, True, 1, True)
 
 test_dir = "./elec301-2021-music-genres/test_new/test_new/"
-test_output_filename = 'test_data.csv'
+test_output_filename = 'test_data1.csv'
 
-gen(test_dir, test_output_filename, False, 15, True)
+gen(test_dir, test_output_filename, False, 1, True)
